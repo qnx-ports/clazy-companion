@@ -1,0 +1,44 @@
+# Alpiine-Contributor: André Klitzing <aklitzing@gmail.com>
+# Alpiine-Maintainer: André Klitzing <aklitzing@gmail.com>
+# Maintainer: Felix Xing <fxing@qnx.com>
+pkgname=clazy
+pkgver=1.16
+pkgrel=0
+pkgdesc="Qt oriented code checker based on clang framework"
+url="https://invent.kde.org/sdk/clazy"
+arch="all"
+license="LGPL-2.0-only"
+_llvmver=21
+depends="
+    clang~$_llvmver
+    clang-libs~$_llvmver
+    "
+makedepends="
+    clang-dev~$_llvmver
+    cmake
+    llvm-dev~$_llvmver
+    perl
+    ninja
+    libc++-dev
+    "
+options="!check" # cannot run tests without installation
+subpackages="$pkgname-doc"
+source="https://download.kde.org/stable/clazy/$pkgver/src/clazy-v$pkgver.tar.xz"
+builddir="$srcdir/clazy-v$pkgver"
+
+build() {
+    cmake -B build -G Ninja \
+        -DCMAKE_SKIP_RPATH=ON \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DCMAKE_INSTALL_PREFIX=/usr
+    cmake --build build
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+}
+
+sha512sums="
+5978ad184ba4e18dbc8af9e1c9cbae603e3e32a8e2e6b9d1c893bf29c1a23237b7155f0c62222aa949d0c4abb71c1c97cf4e4de30f6cacd478a239b283789cb4  clazy-v1.16.tar.xz
+"
